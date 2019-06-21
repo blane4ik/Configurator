@@ -1,0 +1,149 @@
+<button class="btn btn-outline-primary" (click) = "onExtrusionModeActivate()">Настройки экструзии</button>
+    <!-- Режим конструктора -->
+<div *ngIf="!extrusionIsActivated">
+    <h3 class="text-right">Выберите объект</h3>
+    <hr> 
+    <div class="form form-group">
+    <div class="box">
+            <!-- Получение атрибутов для выбранного элемента списка -->
+        <label for="figure" class="elementLabel">Выберите фигуру</label>
+        <select name = 'figure' (change) = 'getAttributes($event.target)' class="attributesSelect form-control">
+            <!-- Отображение элементов списка из массива -->
+            <option *ngFor="let t of typeOfElement">
+                {{t.value}}
+            </option>
+        </select>
+
+        <label for="color" class="elementLabel">Выберите материал</label>
+        <select name="color" (change) = 'getMaterial($event.target)' class="attributesSelect form-control">
+                <!-- Отображение элементов списка из массива -->
+                <option *ngFor="let material of materials">
+                    {{material.value}}
+                </option>
+            </select>
+
+
+            <label for="material" class="elementLabel">Выберите цвет</label>
+            <select name="material" (change) = 'getColor($event.target)' class="attributesSelect form-control">
+                    <!-- Отображение элементов списка из массива -->
+                    <option *ngFor="let color of colors">
+                        {{color.value}}
+                    </option>
+                </select>
+    </div>
+    <hr>
+        <div *ngIf="currentElement">
+            <!-- Определение формы для динамического создания полей параметров и получения их значений -->
+            <form [formGroup] = "form" class="form form-group">
+                <div [ngSwitch]="currentElement.id">
+                    <div *ngSwitchCase="currentElement.id">
+                        <div *ngFor="let args of currentElement.arg">
+                            <label for="elementParametr form-control" class="elementLabel">Ведите {{args.value}} </label>
+                            <input 
+                                type="text"
+                                name="elementParametr" 
+                                placeholder=""
+                                formControlName = "{{args.arg}}"
+                                class="elementParametr form-control"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <br>
+
+            <hr>
+            <!-- Определение группы форм для получения значений позиции общей для всех элементов -->
+        <form [formGroup]="position">
+                <label for="X" class="elementLabel">Введите позицию X </label>
+            <input
+            name="X"
+            type="number"
+            formControlName="positionX"
+            class="elementParametr form-control"
+            >
+            <br>
+            
+            <label for="Y" class="elementLabel">Введите позицию Y </label>
+            <input
+            name="Y"
+            type="number"
+            formControlName="positionY"
+            class="elementParametr form-control"
+                >
+            <br>
+
+            <label for="Z" class="elementLabel">Введите позицию Z </label>
+            <input
+            name="Z"
+            type="number"
+            formControlName="positionZ"
+            class="elementParametr form-control"
+            >
+            <br>
+            <br>
+            <br>
+            <hr>
+            <label for="inputFile" class="elementLabel">Выберите текстуру</label>
+            <input type="file" class="elementParametr form-control" name="inputFile" id="inputFile" (change) = "onTextureLoad($event)">
+            <br>
+            <label for="inputModelFile" class="elementLabel">Выберите объект</label>
+            <input type="file" class="elementParametr form-control" name="inputModelFile" id="inputModelFile" (change) = "onModelInput($event)">
+            <br>
+            <button class="btn btn-outline-secondary" (click) = "onTextureDelete()">Удалить текстуру</button>
+            <br>
+            <button class="btn btn-outline-secondary" (click) = "onModelLoad($event)">Добавить модель</button>
+        </form>
+        </div>
+    </div> 
+    <hr>
+    <button class="btn btn-primary" (click) = "onElementDisplay()">Добавить Объект</button>
+    <button class="btn btn-warning" (click) = "OnAxesAdd()">Оси</button>
+    <button class="btn btn-danger" (click) = "onDeleteElement()">Удалить Объект</button>
+    <button class="btn btn-dark" (click) = "onMerge()">Мерж объектов</button>
+</div>
+    <!-- / Режим конструкотора -->
+
+    <!-- Режим Экструзии -->
+<div *ngIf="extrusionIsActivated">
+    <h3 class="text-right">Выберите настройки!</h3>
+    <hr>
+    <div class="form form-group">
+        <form class="form form-group" [formGroup] = "extrudeConfig">
+            <label for="inputFile" class="elementLabel">Выберите текстуру</label>
+            <input type="file" class="elementParametr form-control" name="inputFile" id="inputFile" (change) = "onTextureLoad($event)">
+            <button class="btn btn-outline-secondary" (click) = "onTextureDelete()">Удалить текстуру</button>
+            <br>
+
+            <label for="depth" class="elementLabel">Введите глубину выдавливания </label>
+            <input type="number" class="elementParametr form-control" name="depth" formControlName="depth">
+            <br>
+
+            <label for="depth" class="elementLabel">Включить/Выключить скосы</label>
+            <input type="checkbox" class="elementCheckbox  form-control" name="enableBevel" formControlName="enableBevel" (change) = "isChecked = !isChecked">
+            <div *ngIf="isChecked">
+                <br>
+                <label for="bevelThickness" class="elementLabel">Введите тощину скоса</label>
+                <input type="number" class="elementCheckbox  form-control" name="bevelThickness" formControlName="bevelThickness">
+                <br>
+                <label for="bevelSize" class="elementLabel">Введите размер скоса</label>
+                <input type="number" class="elementCheckbox  form-control" name="bevelSize" formControlName="bevelSize">
+                <br>
+                <label for="bevelOffset" class="elementLabel">Введите смещение скоса</label>
+                <input type="number" class="elementCheckbox  form-control" name="bevelOffset" formControlName="bevelOffset">
+                <br>
+                <label for="bevelSegments" class="elementLabel">Введите количесво слоев скоса</label>
+                <input type="number" class="elementCheckbox  form-control" name="bevelSegments" formControlName="bevelSegments">
+
+            </div>
+        </form>
+    </div>
+
+    <br>
+    <hr>
+    <button class="btn btn-primary" (click) = "onShapeCreate()">Построить фигуру</button>
+</div>
+    <!-- / Режим Экструзии -->
+
+
+

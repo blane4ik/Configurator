@@ -1,0 +1,36 @@
+<!-- Header -->
+<div class="card text-dark bg-primary header">
+        <div class="card-header">
+        <h1 class="text-white text-center">Конфигуратор объектов</h1>
+    </div>
+    <!-- /Header -->
+    <div class="row">
+        <!-- Canvas -->
+        <div class="card border-primary col-8 canvas">
+            <app-canvas></app-canvas>
+        </div>  
+        <!-- /Canvas -->
+        <!-- Config-bar -->
+        <div class="card border-primary col-4 config">
+            <app-config-bar></app-config-bar>
+        </div>
+    </div>
+    <div class="badge footer" [formGroup] = "footerInputsForm">
+        <ul class="infoBar" >
+            <li class="d-flex flex-row"  *ngFor="let info of infoAboutElement">
+                <div  *ngIf="info.value && isSelected">
+                        <span  class="infoItemName">{{info.name}}: </span>
+                        <input 
+                            type="text" 
+                            class="form form-control" 
+                            value = "{{info.value}}"
+                            formControlName="{{info.id}}"
+                            (keyup) = "onChangeElement()"
+                        />
+                </div>
+                <br>
+            </li>
+        </ul>
+    </div>
+    <!-- /Config-bar -->
+</div>
