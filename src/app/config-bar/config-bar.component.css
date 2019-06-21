@@ -1,0 +1,57 @@
+.btn {
+    width: 100px;
+    margin: 5px;
+}
+
+.elementParametr {
+    float: right;
+    margin-right: 40px;
+}
+
+.elementLabel{
+    position: inherit;
+    font-style: italic;
+    margin-left: 5px;
+}
+
+.form-control.attributesSelect {
+    width: 100%;
+    height: 50px;
+}
+
+.box {
+
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+
+
+.btn-warning, .btn-primary,.btn-danger,.btn-dark {
+    margin-top: 10px;
+    font-family: fantasy;
+    width: 30%;
+}
+
+.btn-outline-secondary {
+    height: 35px;
+    width: 90%;
+    margin-left: 20px;
+}
+
+.form-control {
+    width: 90%;
+    cursor: pointer;
+}
+
+.btn-outline-primary {
+    margin-right: 10px;
+    margin-left: 20px;
+    font-family: fantasy;
+    width: 30%;
+    float: right;
+}
+
+

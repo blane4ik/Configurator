@@ -1,0 +1,63 @@
+<!-- Header -->
+<div class="card text-dark bg-primary header">
+        <div class="card-header">
+        <button class="btn btn-outline-light" (click) = "showHint()">Показать подсказку</button>  
+        <h1 class="text-white text-center" *ngIf="!showHintFlag">Конфигуратор объектов</h1>
+        <div *ngIf="showHintFlag">
+<<<<<<< HEAD
+            <p class="hint"><span class="name">Вращение камеры:</span> Shift + 1 LMB</p>
+            <p class="hint"><span class="name">Зумирование:</span> Mouse Wheel</p>
+            <p class="hint"><span class="name">Перемещение поля:</span> RMB</p>
+            <p class="hint"><span class="name">Акцивация и перемещение:</span> LMB</p>
+            <p class="hint"><span class="name">Вращение:</span> Ctrl + 1 LMB</p>
+            <p class="hint"><span class="name">Растягивание:</span> Ctrl + 1 RMB (когда фигура активна)</p>
+            <p class="hint"><span class="name">Фигура с текстурой:</span> Задать параметры фигуры, выбрать текстуру в поле и нажать кнопку "Добавить Объект"</p>
+            <p class="hint"><span class="name">Пользовательские объекты:</span> Выбрать *.mtl текстуру и *.obj объект и нажать "Добавить модель"</p>
+            <p class="hint"><span class="name">Вычетание, объединение и пересечение:</span> Выбрать 2 (при объединении допускается больше) фигуры (они должны соприкосаться) и нажать соответсвтующую кнопку</p>
+            <p class="hint"><span class="name">Ножницы:</span> Создать фигуру, создать плоскость, плоскостью обозначить разрез, сделать активной разрезаемую фигуру и нажать на кнопку</p>
+            <p class="hint"><span class="name">Экструзия:</span> При помощи LMB на поле задать точки для фигуры (при необходимости задать текстуры и параметры) и нажать "Построить фигуру"</p>
+=======
+            <p class="hint"><span class="name">Вращение камеры: </span> Shift + 1 LMB</p>
+            <p class="hint"><span class="name">Зумирование: </span> Mouse Wheel</p>
+            <p class="hint"><span class="name">Перемещение поля: </span> RMB</p>
+            <p class="hint"><span class="name">Акцивация и перемещение: </span> LMB</p>
+            <p class="hint"><span class="name">Вращение: </span> Ctrl + 1 LMB</p>
+            <p class="hint"><span class="name">Растягивание: </span> Ctrl + 1 RMB (когда фигура активна)</p>
+            <p class="hint"><span class="name">Фигура с текстурой: </span> Задать параметры фигуры, выбрать текстуру в поле и нажать кнопку "Добавить Объект"</p>
+            <p class="hint"><span class="name">Пользовательские объекты: </span> Выбрать *.mtl текстуру и *.obj объект и нажать "Добавить модель"</p>
+            <p class="hint"><span class="name">Вычетание, объединение и пересечение: </span>Выбрать 2 (при объединении допускается больше) фигуры (они должны соприкосаться) и нажать соответсвтующую кнопку</p>
+            <p class="hint"><span class="name">Экструзия: </span> При помощи LMB на поле задать точки для фигуры (при необходимости задать текстуры и параметры) и нажать "Построить фигуру"</p>
+>>>>>>> master
+        </div>
+    </div>
+    <!-- /Header -->
+    <div class="row">
+        <!-- Canvas -->
+        <div class="card border-primary col-8 canvas">
+            <app-canvas></app-canvas>
+        </div>  
+        <!-- /Canvas -->
+        <!-- Config-bar -->
+        <div class="card border-primary col-4 config">
+            <app-config-bar></app-config-bar>
+        </div>
+    </div>
+    <div class="badge footer" [formGroup] = "footerInputsForm">
+        <ul class="infoBar" >
+            <li class="d-flex flex-row"  *ngFor="let info of infoAboutElement">
+                <div  *ngIf="info.value && isSelected">
+                        <span  class="infoItemName">{{info.name}}: </span>
+                        <input 
+                            type="text" 
+                            class="form form-control" 
+                            value = "{{info.value}}"
+                            formControlName="{{info.id}}"
+                            (keyup) = "onChangeElement()"
+                        />
+                </div>
+                <br>
+            </li>
+        </ul>
+    </div>
+    <!-- /Config-bar -->
+</div>
