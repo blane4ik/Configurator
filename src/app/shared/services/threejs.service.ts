@@ -1,4 +1,4 @@
-import { Injectable, EventEmitter, ɵConsole } from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import * as THREE from 'three';
 import CSG from 'three-js-csg/index.js';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
@@ -6,7 +6,7 @@ import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
 
 import { PerspectiveCamera, Scene, WebGLRenderer, Geometry, Material,
          AmbientLight, DirectionalLight, Raycaster, Intersection, AxesHelper,
-         GridHelper, BufferGeometry, Mesh} from 'three';
+         GridHelper, BufferGeometry, Mesh, Box3Helper} from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
 import { SelectedMesh } from '../classes/selected-mesh';
@@ -41,7 +41,6 @@ export class ThreejsService {
   raycaster: Raycaster;
 
   rendererContainer: HTMLElement;
-
 // определение свойств объекта
   geometry: Geometry;
   material: Material;
@@ -68,6 +67,7 @@ export class ThreejsService {
      this.scene = new THREE.Scene();
      this.camera = new THREE.PerspectiveCamera(90, rendererContainer.nativeElement.clientWidth /
                                                    rendererContainer.nativeElement.clientHeight, 0.1, 10000 );
+
      this.camera.position.z = 30;
      this.camera.position.y = 50;
      this.scene.add(this.camera);
@@ -75,13 +75,12 @@ export class ThreejsService {
      this.grid = new THREE.GridHelper(80, 80);
      this.scene.add(this.grid);
 
-     this.axes = new THREE.AxesHelper(15);
+     this.axes = new THREE.AxesHelper(80);
 
      this.orbitControls = new OrbitControls(this.camera, rendererContainer.nativeElement);
      this.orbitControls.enableRotate = false;
      this.transformControls = new TransformControls(this.camera, rendererContainer.nativeElement);
      this.transformControls.setSize(1.5);
-     this.transformControls.pointerUp(new THREE.Mesh(new THREE.PlaneGeometry(1, 4, 1), new THREE.MeshStandardMaterial({color: 0xff0000})));
      this.scene.add(this.transformControls);
 
      this.raycaster = new THREE.Raycaster();
@@ -97,7 +96,6 @@ export class ThreejsService {
 
      this.renderer = new THREE.WebGLRenderer({canvas: rendererContainer.nativeElement, alpha: true, preserveDrawingBuffer: true});
      this.renderer.setSize(rendererContainer.nativeElement.clientWidth, rendererContainer.nativeElement.clientHeight);
-     this.renderer.localClippingEnabled = true;
      console.log(this.scene);
 
      this.animate();
@@ -217,7 +215,6 @@ export class ThreejsService {
     }
 
   }
-
   // Метод-хелпер для рендеринга канваса
   private render() {
 
@@ -302,6 +299,7 @@ export class ThreejsService {
       if (this.info !== '' && this.info instanceof SelectedMesh && this.info.geometry.boundingBox !== null) {
       this.info.position.divideScalar( 1 ).floor().multiplyScalar( 1 ).addScalar( 0.5 );
       const box = this.info.geometry.boundingBox.getSize(new THREE.Vector3());
+      console.log(box);
 
       if (this.info.position.x < (box.x / 2) - 40) {
         this.info.position.x = (box.x / 2) - 40;
@@ -657,23 +655,31 @@ export class ThreejsService {
     box2.translateOnAxis(axis, -boxSize / 2);
     box2.updateMatrix();
 
-
     if (this.src !== '') {
-    const meshC = this.doCSG( box2, this.info, 'intersect', new THREE.MeshPhongMaterial({map: load}));
-    meshC.geometry.boundingBox = null;
+      const meshC = this.doCSG( box2, this.info, 'intersect', new THREE.MeshPhongMaterial({map: load}));
+      meshC.geometry.boundingBox = null;
 
-    const meshD = this.doCSG( box, this.info, 'intersect', new THREE.MeshPhongMaterial({map: load}));
-    meshD.geometry.boundingBox = null;
-    this.scene.add(meshC);
-    this.scene.add(meshD);
-   } else {
-    const meshC = this.doCSG( box2, this.info, 'intersect', new THREE.MeshNormalMaterial());
-    meshC.geometry.boundingBox = null;
+      const meshD = this.doCSG( box, this.info, 'intersect', new THREE.MeshPhongMaterial({map: load}));
+      meshD.geometry.boundingBox = null;
 
-    const meshD = this.doCSG( box, this.info, 'intersect', new THREE.MeshNormalMaterial());
-    meshD.geometry.boundingBox = null;
-    this.scene.add(meshC);
-    this.scene.add(meshD);
+      this.scene.add(meshC);
+      this.scene.add(meshD);
+    } else {
+      const meshC = this.doCSG( box, this.info, 'intersect', new THREE.MeshNormalMaterial());
+      const boxC = new THREE.Box3();
+      boxC.setFromObject(meshC);
+      this.transformControls.updateMatrixWorld();
+      // meshC.geometry.boundingBox = null;
+
+      const meshD = this.doCSG( box2, this.info, 'intersect', new THREE.MeshNormalMaterial());
+      const boxD = new THREE.Box3();
+      boxD.setFromObject(meshD);
+      // meshD.geometry.boundingBox = null;
+      this.transformControls.updateMatrixWorld();
+
+
+      this.scene.add(meshC);
+      this.scene.add(meshD);
    }
 
     // tslint:disable-next-line:prefer-for-of

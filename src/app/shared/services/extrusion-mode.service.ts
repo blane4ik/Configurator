@@ -113,8 +113,8 @@ export class ExtrusionModeService {
 // Создание объекта на сцене по заданным свойствам и координатам
     const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
     const load = new THREE.TextureLoader().load(this.src);
-    load.wrapS = 128;
-    load.wrapT = 128;
+    load.wrapS = THREE.RepeatWrapping;
+    load.wrapT = THREE.RepeatWrapping;
     load.anisotropy = 16;
     let material;
     if (this.src) {

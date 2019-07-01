@@ -235,7 +235,7 @@ export class ConfigBarComponent implements OnInit {
     this.form.reset();
     this.position.reset();
   }
-
+  // Методы транформации объекта
   onMerge() {
     this.threejsService.onMerge();
   }
@@ -251,13 +251,13 @@ export class ConfigBarComponent implements OnInit {
   onClipping() {
     this.threejsService.onClippingByPlane();
   }
-
+  // Метод активации экструзии
   onExtrusionModeActivate() {
    this.extrusionIsActivated = !this.extrusionIsActivated;
    this.extrusionModeService.extrudeIsActivated = this.extrusionIsActivated;
    this.extrusionModeService.onExtrudeActivate();
   }
-
+  // Отрисовка фигуры с заданными параметрами
   onShapeCreate() {
     const depth = this.extrudeConfig.controls.depth.value;
     const bevelSegments = this.extrudeConfig.controls.bevelSegments.value;
