@@ -1,5 +1,8 @@
-<canvas onExtrusionModeActivate
+<!-- Было внутри тега  onExtrusionModeActivate -->
+<canvas id="canvas"
     #rendererContainer 
+    (mouseup) = "onMouseUp()"
     (click) = "onMouseClick($event)"
     (contextmenu) = "onContextClick($event)"
-></canvas>
+>
+</canvas>

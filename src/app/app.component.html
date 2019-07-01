@@ -1,7 +1,20 @@
 <!-- Header -->
 <div class="card text-dark bg-primary header">
         <div class="card-header">
-        <h1 class="text-white text-center">Конфигуратор объектов</h1>
+        <button class="btn btn-outline-light" (click) = "showHint()">Показать подсказку</button>  
+        <h1 class="text-white text-center" *ngIf="!showHintFlag">Конфигуратор объектов</h1>
+        <div *ngIf="showHintFlag">
+            <p class="hint"><span class="name">Вращение камеры: </span> Shift + 1 LMB</p>
+            <p class="hint"><span class="name">Зумирование: </span> Mouse Wheel</p>
+            <p class="hint"><span class="name">Перемещение поля: </span> RMB</p>
+            <p class="hint"><span class="name">Акцивация и перемещение: </span> LMB</p>
+            <p class="hint"><span class="name">Вращение: </span> Ctrl + 1 LMB</p>
+            <p class="hint"><span class="name">Растягивание: </span> Ctrl + 1 RMB (когда фигура активна)</p>
+            <p class="hint"><span class="name">Фигура с текстурой: </span> Задать параметры фигуры, выбрать текстуру в поле и нажать кнопку "Добавить Объект"</p>
+            <p class="hint"><span class="name">Пользовательские объекты: </span> Выбрать *.mtl текстуру и *.obj объект и нажать "Добавить модель"</p>
+            <p class="hint"><span class="name">Вычетание, объединение и пересечение: </span>Выбрать 2 (при объединении допускается больше) фигуры (они должны соприкосаться) и нажать соответсвтующую кнопку</p>
+            <p class="hint"><span class="name">Экструзия: </span> При помощи LMB на поле задать точки для фигуры (при необходимости задать текстуры и параметры) и нажать "Построить фигуру"</p>
+        </div>
     </div>
     <!-- /Header -->
     <div class="row">

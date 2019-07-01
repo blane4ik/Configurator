@@ -4,7 +4,7 @@
     <h3 class="text-right">Выберите объект</h3>
     <hr> 
     <div class="form form-group">
-    <div class="box">
+    <div class="box" id="box">
             <!-- Получение атрибутов для выбранного элемента списка -->
         <label for="figure" class="elementLabel">Выберите фигуру</label>
         <select name = 'figure' (change) = 'getAttributes($event.target)' class="attributesSelect form-control">
@@ -47,6 +47,11 @@
                                 class="elementParametr form-control"
                             />
                         </div>
+                    </div>
+                    <div *ngIf="currentElement.id === 6" id="fonts">
+                        <br>
+                        <label for="inputFile" class="elementLabel">Выберите шрифт</label>
+                        <input type="file" class="elementParametr form-control" name="inputFont" id="inputFont" (change) = "onFontLoad($event)">
                     </div>
                 </div>
             </form>
@@ -97,10 +102,16 @@
         </div>
     </div> 
     <hr>
-    <button class="btn btn-primary" (click) = "onElementDisplay()">Добавить Объект</button>
-    <button class="btn btn-warning" (click) = "OnAxesAdd()">Оси</button>
-    <button class="btn btn-danger" (click) = "onDeleteElement()">Удалить Объект</button>
-    <button class="btn btn-dark" (click) = "onMerge()">Мерж объектов</button>
+    <button class="btn btn-primary" id="add" (click) = "onElementDisplay()">Добавить Объект</button>
+    <button class="btn btn-warning" id="axes" (click) = "OnAxesAdd()">Оси</button>
+    <button class="btn btn-danger" id="delete" (click) = "onDeleteElement()">Удалить Объект</button>
+
+    <button class="btn btn-dark" id="merge" (click) = "onMerge()">Объединение объектов</button>
+    <button class="btn btn-dark" id="subtract" (click) = "onSubtract()">Вычитание объектов</button>
+    <button class="btn btn-dark" id="intersect" (click) = "onIntersect()">Пересечение объектов</button>
+
+    <button class="btn btn-dark" id="clipping" (click) = "onClipping()">Разрезание объектов</button>
+
 </div>
     <!-- / Режим конструкотора -->
 

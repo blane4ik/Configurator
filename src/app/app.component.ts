@@ -1,8 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ThreejsService } from './shared/services/threejs.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { SelectedMesh } from './shared/classes/selected-mesh';
-import { BoxGeometry, SphereGeometry, CircleGeometry, ConeGeometry, CylinderGeometry, Geometry } from 'three';
+import { BoxGeometry, SphereGeometry, ConeGeometry, CylinderGeometry, PlaneGeometry } from 'three';
 
 
 @Component({
@@ -21,7 +21,7 @@ export class AppComponent implements OnInit {
   // Флаг для проверки выбона объекта
   isSelected = false;
   // Список цветов и их значения для их изменения
-  colors = [
+  colors: {value: string, name: string}[] = [
     {
       value: '000000', name: 'Black'
     },
@@ -62,6 +62,8 @@ export class AppComponent implements OnInit {
       value: '4b0082', name: 'Indigo'
     },
   ];
+
+  showHintFlag = false;
 
   constructor(public threejsService: ThreejsService) {}
 
@@ -178,28 +180,27 @@ export class AppComponent implements OnInit {
 
   // изменение свойств выбранного объекта
   onChangeElement() {
-    const posX = this.footerInputsForm.controls.posX.value;
-    const posY = this.footerInputsForm.controls.posY.value;
-    const posZ = this.footerInputsForm.controls.posZ.value;
-    const width = this.footerInputsForm.controls.width.value;
-    const height = this.footerInputsForm.controls.height.value;
-    const depth = this.footerInputsForm.controls.depth.value;
-    const radius = this.footerInputsForm.controls.radius.value;
-    const segments = this.footerInputsForm.controls.segments.value;
-    const heightSegments = this.footerInputsForm.controls.heightSegments.value;
-    const radialSegments = this.footerInputsForm.controls.radialSegments.value;
-    const widthSegments = this.footerInputsForm.controls.widthSegments.value;
-    const radiusTop = this.footerInputsForm.controls.radiusTop.value;
-    const radiusBottom = this.footerInputsForm.controls.radiusBottom.value;
-    const color = this.footerInputsForm.controls.color.value;
+    const posX: number = this.footerInputsForm.controls.posX.value;
+    const posY: number = this.footerInputsForm.controls.posY.value;
+    const posZ: number = this.footerInputsForm.controls.posZ.value;
+    const width: number = this.footerInputsForm.controls.width.value;
+    const height: number = this.footerInputsForm.controls.height.value;
+    const depth: number = this.footerInputsForm.controls.depth.value;
+    const radius: number = this.footerInputsForm.controls.radius.value;
+    const heightSegments: number = this.footerInputsForm.controls.heightSegments.value;
+    const radialSegments: number = this.footerInputsForm.controls.radialSegments.value;
+    const widthSegments: number = this.footerInputsForm.controls.widthSegments.value;
+    const radiusTop: number = this.footerInputsForm.controls.radiusTop.value;
+    const radiusBottom: number = this.footerInputsForm.controls.radiusBottom.value;
+    const color: string = this.footerInputsForm.controls.color.value;
 
     switch (this.elementToChange.geometry.type) {
       case 'BoxGeometry': this.elementToChange.geometry = new BoxGeometry(width, height, depth);
                           break;
       case 'SphereGeometry': this.elementToChange.geometry = new SphereGeometry(radius, widthSegments, heightSegments);
                              break;
-      case 'CircleGeometry': this.elementToChange.geometry = new CircleGeometry(radius, segments);
-                             break;
+      case 'PlaneGeometry': this.elementToChange.geometry = new PlaneGeometry(width, height);
+                            break;
       case 'ConeGeometry': this.elementToChange.geometry = new ConeGeometry(radius, height, radialSegments);
                            break;
       case 'CylinderGeometry': this.elementToChange.geometry = new CylinderGeometry(radiusTop, radiusBottom, height, radialSegments);
@@ -219,4 +220,7 @@ export class AppComponent implements OnInit {
     } );
   }
 
+  showHint() {
+    this.showHintFlag = !this.showHintFlag;
+  }
 }

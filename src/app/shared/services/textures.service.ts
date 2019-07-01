@@ -12,15 +12,17 @@ export class TexturesService {
   constructor(public threejsService: ThreejsService, public extrusionModeService: ExtrusionModeService) { }
 
   onTextureLoad(event) {
-    const input = event.target;
+    const input: HTMLInputElement = event.target;
     const reader = new FileReader();
     reader.onload = (e: any) => {
       this.textureSrc = e.target.result;
       this.threejsService.src = this.textureSrc;
       this.extrusionModeService.src = this.textureSrc;
+      console.log(e);
     };
     if (input.files.length !== 0) {
       reader.readAsDataURL(input.files[0]);
+      console.log(input.files[0]);
     }
   }
 
@@ -33,8 +35,8 @@ export class TexturesService {
   }
 
   onModelLoad(event) {
-    const input = event.target;
-    const reader = new FileReader();
+    const input: HTMLInputElement = event.target;
+    const reader: FileReader = new FileReader();
     reader.onload = (e: any) => {
       this.modelTextureSrc = e.target.result;
       this.threejsService.modelSrc = this.modelTextureSrc;

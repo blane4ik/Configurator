@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ThreejsService } from './threejs.service';
 import * as THREE from 'three';
-import { Intersection, GridHelper, Mesh } from 'three';
+import { Intersection, GridHelper, Mesh, Vector2, Raycaster, Geometry, Material, Shape, Box3, Vector3 } from 'three';
 import { SelectedMesh } from '../classes/selected-mesh';
 
 @Injectable({
@@ -9,7 +9,7 @@ import { SelectedMesh } from '../classes/selected-mesh';
 })
 export class ExtrusionModeService {
   // Флаг для проверки, активирован ли режим экструзии
-  extrudeIsActivated;
+  extrudeIsActivated: boolean;
   // массив, хранящий объекты с координатами
   shapeCoordinates = [];
   //  объект, хранящий координаты кликов
@@ -21,15 +21,15 @@ export class ExtrusionModeService {
   // вынос метода ивента нажатия на кнопку мыши
   onExtrudeHandler = (event) => this.onMouseClick(event);
 
-  constructor(public threejsService: ThreejsService) { }
-  // Метод передвижения мыши по полю
+  constructor(public threejsService: ThreejsService) {}
+  // METHOD IS NOT USED!!!!!!!
   onMouseMove(event) {
-    const mouse = new THREE.Vector2();
-    const raycaster = new THREE.Raycaster();
+    const mouse: Vector2 = new THREE.Vector2();
+    const raycaster: Raycaster = new THREE.Raycaster();
 
-    const geometry = new THREE.SphereGeometry(0.3, 21);
-    const material = new THREE.PointsMaterial({color: 'gray'});
-    const mesh = new THREE.Mesh(geometry, material);
+    const geometry: Geometry = new THREE.SphereGeometry(0.3, 21);
+    const material: Material = new THREE.PointsMaterial({color: 'gray'});
+    const mesh: Mesh = new THREE.Mesh(geometry, material);
 
 
 
@@ -51,11 +51,11 @@ export class ExtrusionModeService {
   }
   //  метод щелка кнопки мыши
   onMouseClick(event) {
-    const mouse = new THREE.Vector2();
-    const raycaster = new THREE.Raycaster();
+    const mouse: Vector2 = new THREE.Vector2();
+    const raycaster: Raycaster = new THREE.Raycaster();
     // Создание сферы для отметки места щелчка мыши
-    const geometry = new THREE.SphereGeometry(0.3, 21);
-    const material = new THREE.PointsMaterial({color: 'gray'});
+    const geometry: Geometry = new THREE.SphereGeometry(0.3, 21);
+    const material: Material = new THREE.PointsMaterial({color: 'gray'});
     const mesh: Mesh = new THREE.Mesh(geometry, material);
     // координаты мыши
     mouse.x = (event.offsetX / this.threejsService.rendererContainer.offsetWidth ) * 2 - 1;
@@ -90,9 +90,9 @@ export class ExtrusionModeService {
 
   onShapeCreate(depth, bevelSegments, bevelThickness, bevelSize, bevelOffset, enableBevel) {
     // создание элемента формы для будущего объекта
-    const shape = new THREE.Shape();
+    const shape: Shape = new THREE.Shape();
     // создание ограничивающей коробки для отцентровки
-    const box = new THREE.Box3();
+    const box: Box3 = new THREE.Box3();
     // определение координат для построения фигуры (первые координада - начало)
     for (let i = 0; i < this.shapeCoordinates.length; i++) {
       if (i === 0) {
@@ -110,23 +110,22 @@ export class ExtrusionModeService {
       bevelOffset,
       bevelSegments
     };
-// Создание объектра на сцене пр заданным свойствам и координатам
-    const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+// Создание объекта на сцене по заданным свойствам и координатам
+    const geometry: Geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
     const load = new THREE.TextureLoader().load(this.src);
-    load.wrapS = 128;
-    load.wrapT = 128;
+    load.wrapS = THREE.RepeatWrapping;
+    load.wrapT = THREE.RepeatWrapping;
     load.anisotropy = 16;
-    let material;
-    console.log(this.src);
+    let material: Material;
     if (this.src) {
       material  = new THREE.MeshStandardMaterial({map: load});
     } else {
-      material = new THREE.MeshStandardMaterial({color: 0xff00ff});
+      material = new THREE.MeshNormalMaterial();
     }
-    const mesh = new SelectedMesh(geometry, material);
+    const mesh: Mesh = new SelectedMesh(geometry, material);
     // присвоение ограничивающей коробки для объекта
     box.setFromObject(mesh);
-    const vector = new THREE.Vector3();
+    const vector: Vector3 = new THREE.Vector3();
     // определение цетра
     box.getCenter(vector);
     // позиционирование в пространстве

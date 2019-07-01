@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, OnChanges, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { ThreejsService } from '../shared/services/threejs.service';
 import { ExtrusionModeService } from '../shared/services/extrusion-mode.service';
 
@@ -20,12 +20,12 @@ export class CanvasComponent implements AfterViewInit {
   }
 
   onMouseClick(event) {
-    this.threejsService.onMouseClick(event); 
+    this.threejsService.onMouseClick(event);
 
   }
 
-  onMouseMove(event) {
-    this.extrusionModeService.onMouseMove(event);
+  onMouseUp() {
+    this.threejsService.onMouseUp();
   }
 
   onClick(event) {
@@ -35,5 +35,4 @@ export class CanvasComponent implements AfterViewInit {
   onContextClick(event) {
     this.threejsService.onContextClick(event);
   }
-
 }

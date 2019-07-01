@@ -55,3 +55,22 @@ h1 {
     margin-left: 1%;
     max-width: 65.5%;
 }
+
+.btn-outline-light{
+    float: left;
+    width: 200px;
+    height: 50px;
+    margin: 1%;
+}
+
+.hint{
+    font-size: 20px;
+    margin: 1%;
+    color: white;
+    display: inline;
+}
+
+span.name {
+    color: gainsboro;
+    text-decoration: underline;
+}

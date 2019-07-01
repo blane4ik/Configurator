@@ -8,14 +8,12 @@ import { AppComponent } from './app.component';
 import { CanvasComponent } from './canvas/canvas.component';
 import { ConfigBarComponent } from './config-bar/config-bar.component';
 import { ThreejsService } from './shared/services/threejs.service';
-import { ChangeValuesDirective } from './shared/directives/change-values.directive';
 
 @NgModule({
   declarations: [
     AppComponent,
     CanvasComponent,
-    ConfigBarComponent,
-    ChangeValuesDirective
+    ConfigBarComponent
   ],
   imports: [
     BrowserModule,

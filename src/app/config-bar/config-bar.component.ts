@@ -17,59 +17,65 @@ export class ConfigBarComponent implements OnInit {
   extrudeConfig: FormGroup;
   extrusionIsActivated = false;
   isChecked = false;
+  fontSelected = false;
 
   // Текущие элементы дропдаун списка
-  currentElement = {id: 1, type: 'box', value: 'Куб', arg: [
+  currentElement: {id: number, type: string, value: string, arg: {arg: string, value: string}[]} = {id: 1, type: 'box', value: 'Куб', arg: [
     {arg: 'boxWidth', value: 'Ширину'},
     {arg: 'boxHeight', value: 'Высоту'},
     {arg: 'boxDepth', value: 'Глубину'}
   ]};
 
-  currentMaterial = {id: 1, value: 'MeshBasicMaterial'};
-  currentColor = {type: 'black', value: 'Черный'};
+  currentMaterial: {id: number, value: string} = {id: 1, value: 'MeshPhongMaterial'};
+  currentColor: {type: string, value: string} = {type: 'black', value: 'Черный'};
   // массив из всех элементов дропдаун списка
-  typeOfElement = [
+  typeOfElement: {id: number, type: string, value: string, arg: {arg: string, value: string}[]}[] = [
     {id: 1, type: 'box', value: 'Куб', arg: [
       {arg: 'boxWidth', value: 'Ширину'},
       {arg: 'boxHeight', value: 'Высоту'},
       {arg: 'boxDepth', value: 'Глубину'}
     ]},
-    {id: 2, type: 'circle', value: 'Окружность', arg: [
-      {arg: 'circleRadius', value: 'Радиус'},
-      {arg: 'circleSegments', value: 'Кол-во Сегментов'},
+    {id: 2, type: 'plane', value: 'Плосткость', arg: [
+      {arg: 'planeWidth', value: 'Ширина'},
+      {arg: 'planeHeight', value: 'Высота'},
     ]},
     {id: 3, type: 'sphere', value: 'Сфера', arg: [
       {arg: 'sphereRadius', value: 'Радиус'},
-      {arg: 'sphereSegmentsWidth', value: 'Ширину Сегментов'},
-      {arg: 'sphereSegmentsHeight', value: 'Высоту Сегментов'}
+      {arg: 'sphereSegmentsWidth', value: 'Сегментов в Ширину'},
+      {arg: 'sphereSegmentsHeight', value: 'Сегментов в Высоту'}
     ]},
     {id: 4, type: 'cone', value: 'Конус', arg: [
       {arg: 'coneRadius', value: 'Радиус'},
-      {arg: 'coneSegmentsHeight', value: 'Высоту Сегментов'},
+      {arg: 'coneSegmentsHeight', value: 'Высоту'},
       {arg: 'coneSegments', value: 'Кол-во Сегментов'}
     ]},
     {id: 5, type: 'cilinder', value: 'Цилиндр', arg: [
       {arg: 'cilinderRadiusTop', value: 'Радиус Верха'},
       {arg: 'cilinderRadiusBot', value: 'Радиус Низа'},
       {arg: 'cilinderHeight', value: 'Высоту'},
-      {arg: 'cilinderSegmentsRadius', value: 'Радиус Сегмента'}
+      {arg: 'cilinderSegmentsRadius', value: 'Кол-во Сегментов'}
+    ]},
+    {id: 6, type: 'text', value: 'Текст', arg: [
+      {arg: 'text', value: 'Текст'},
+      {arg: 'textSize', value: 'Размер'},
+      {arg: 'textHeight', value: 'Высоту'},
     ]}
   ];
 
-  materials = [
-    {id: 1, value: 'MeshBasicMaterial'},
+  materials: {id: number, value: string}[] = [
+    {id: 1, value: 'MeshPhongMaterial'},
     {id: 2, value: 'MeshDepthMaterial'},
     {id: 3, value: 'MeshDistanceMaterial'},
     {id: 4, value: 'MeshLambertMaterial'},
     {id: 5, value: 'MeshMatcapMaterial'},
     {id: 6, value: 'MeshNormalMaterial'},
-    {id: 7, value: 'MeshPhongMaterial'},
+    {id: 7, value: 'MeshBasicMaterial'},
     {id: 8, value: 'MeshPhysicalMaterial'},
     {id: 9, value: 'MeshStandardMaterial'},
     {id: 10, value: 'MeshToonMaterial'},
   ];
 
-  colors = [
+  colors: {type: string, value: string}[] = [
     { type: 'black', value: 'Черный'},
     { type: 'white', value: 'Белый'},
     { type: 'red', value: 'Красный'},
@@ -85,7 +91,12 @@ export class ConfigBarComponent implements OnInit {
     { type: 'indigo', value: 'Индиго'},
   ];
 
-  // определение сервиса для работы с Three.js
+  fonts: {name: string, value: string, checked: boolean}[] = [
+    {name: 'gothicFont', value: 'Gothic', checked: false},
+    {name: 'helvetikerFont', value: 'Helvetiker', checked: false},
+    {name: 'font3Font', value: 'Font3', checked: false},
+  ];
+
   constructor(
     private threejsService: ThreejsService,
     private extrusionModeService: ExtrusionModeService,
@@ -99,8 +110,8 @@ export class ConfigBarComponent implements OnInit {
       boxHeight: new FormControl('1'),
       boxDepth: new FormControl('1'),
 
-      circleRadius: new FormControl('1'),
-      circleSegments: new FormControl('21'),
+      planeWidth: new FormControl('5'),
+      planeHeight: new FormControl('5'),
 
       sphereRadius: new FormControl('1'),
       sphereSegmentsWidth: new FormControl('21'),
@@ -114,6 +125,10 @@ export class ConfigBarComponent implements OnInit {
       cilinderRadiusBot: new FormControl('1'),
       cilinderHeight: new FormControl('2'),
       cilinderSegmentsRadius: new FormControl('21'),
+
+      text: new FormControl('Hello World'),
+      textSize: new FormControl('1'),
+      textHeight: new FormControl('1')
     });
 
     this.position = new FormGroup({
@@ -136,19 +151,19 @@ export class ConfigBarComponent implements OnInit {
 
 // Получение конкретного объекта элемента в зависимости от выбранного элемента списка
   getAttributes(elem) {
-    const value = elem.value;
+    const value: string = elem.value;
     const res = this.typeOfElement.find( (e) => e.value === value );
     this.currentElement = res;
   }
 
   getMaterial(elem) {
-    const value = elem.value;
+    const value: string = elem.value;
     const res = this.materials.find( (e) => e.value === value );
     this.currentMaterial = res;
   }
 
   getColor(elem) {
-    const value = elem.value;
+    const value: string = elem.value;
     const res = this.colors.find( (e) => e.value === value );
     this.currentColor = res;
   }
@@ -164,33 +179,37 @@ export class ConfigBarComponent implements OnInit {
   // метод для отображения элемента
   onElementDisplay() {
     // определение параметров для всех фигур
-    const boxWidth = this.form.controls.boxWidth.value;
-    const boxHeight = this.form.controls.boxHeight.value;
-    const boxDepth = this.form.controls.boxDepth.value;
+    const boxWidth: number = this.form.controls.boxWidth.value;
+    const boxHeight: number = this.form.controls.boxHeight.value;
+    const boxDepth: number = this.form.controls.boxDepth.value;
 
-    const circleRadius = this.form.controls.circleRadius.value;
-    const circleSegments = this.form.controls.circleSegments.value;
+    const planeWidth: number = this.form.controls.planeWidth.value;
+    const planeHeight: number = this.form.controls.planeHeight.value;
 
-    const sphereRadius = this.form.controls.sphereRadius.value;
-    const sphereSegmentsWidth = this.form.controls.sphereSegmentsWidth.value;
-    const sphereSegmentsHeight = this.form.controls.sphereSegmentsHeight.value;
+    const sphereRadius: number = this.form.controls.sphereRadius.value;
+    const sphereSegmentsWidth: number = this.form.controls.sphereSegmentsWidth.value;
+    const sphereSegmentsHeight: number = this.form.controls.sphereSegmentsHeight.value;
 
-    const coneRadius = this.form.controls.coneRadius.value;
-    const coneSegmentsHeight = this.form.controls.coneSegmentsHeight.value;
-    const coneSegments = this.form.controls.coneSegments.value;
+    const coneRadius: number = this.form.controls.coneRadius.value;
+    const coneSegmentsHeight: number = this.form.controls.coneSegmentsHeight.value;
+    const coneSegments: number = this.form.controls.coneSegments.value;
 
-    const cilinderRadiusTop = this.form.controls.cilinderRadiusTop.value;
-    const cilinderRadiusBot = this.form.controls.cilinderRadiusBot.value;
-    const cilinderHeight = this.form.controls.cilinderHeight.value;
-    const cilinderSegmentsRadius = this.form.controls.cilinderSegmentsRadius.value;
+    const cilinderRadiusTop: number = this.form.controls.cilinderRadiusTop.value;
+    const cilinderRadiusBot: number = this.form.controls.cilinderRadiusBot.value;
+    const cilinderHeight: number = this.form.controls.cilinderHeight.value;
+    const cilinderSegmentsRadius: number = this.form.controls.cilinderSegmentsRadius.value;
+
+    const text: string = this.form.controls.text.value;
+    const textSize: number = this.form.controls.textSize.value;
+    const textHeight: number = this.form.controls.textHeight.value;
 
     // определение позиции
-    const posX = this.position.controls.positionX.value;
-    const posY = this.position.controls.positionY.value;
-    const posZ = this.position.controls.positionZ.value;
+    const posX: number = this.position.controls.positionX.value;
+    const posY: number = this.position.controls.positionY.value;
+    const posZ: number = this.position.controls.positionZ.value;
     // определение материала и цвета
-    const material = this.currentMaterial.value;
-    const color = this.currentColor.type;
+    const material: string = this.currentMaterial.value;
+    const color: string = this.currentColor.type;
 
     // вызов метода из сервиса в соответствии с выбранной фигурой из дропдаун списка
     switch (this.currentElement.id) {
@@ -203,8 +222,8 @@ export class ConfigBarComponent implements OnInit {
         break;
       case 2:
         this.threejsService.addElement(
-          this.threejsService.onCircleCreate(
-            circleRadius, circleSegments, this.threejsService.defineTheProperties(material, color)
+          this.threejsService.onPlaneCreate(
+            planeWidth, planeHeight, this.threejsService.defineTheProperties(material, color)
           ), posX, posY, posZ
         );
         break;
@@ -231,28 +250,49 @@ export class ConfigBarComponent implements OnInit {
           ), posX, posY, posZ
         );
         break;
+      case 6:
+        this.threejsService.addElement(
+          this.threejsService.onTextCreate(
+          text, textSize, textHeight, this.threejsService.defineTheProperties(
+            material, color
+            )
+          ), posX, posY, posZ
+        );
+        break;
     }
     this.form.reset();
     this.position.reset();
   }
-
+  // Методы транформации объекта
   onMerge() {
     this.threejsService.onMerge();
   }
 
+  onSubtract() {
+    this.threejsService.onSubtract();
+  }
+
+  onIntersect() {
+    this.threejsService.onIntersect();
+  }
+
+  onClipping() {
+    this.threejsService.onClippingByPlane();
+  }
+  // Метод активации экструзии
   onExtrusionModeActivate() {
    this.extrusionIsActivated = !this.extrusionIsActivated;
    this.extrusionModeService.extrudeIsActivated = this.extrusionIsActivated;
    this.extrusionModeService.onExtrudeActivate();
   }
-
+  // Отрисовка фигуры с заданными параметрами
   onShapeCreate() {
-    const depth = this.extrudeConfig.controls.depth.value;
-    const bevelSegments = this.extrudeConfig.controls.bevelSegments.value;
-    const bevelThickness = this.extrudeConfig.controls.bevelThickness.value;
-    const bevelSize = this.extrudeConfig.controls.bevelSize.value;
-    const bevelOffset = this.extrudeConfig.controls.bevelOffset.value;
-    const enableBevel = this.extrudeConfig.controls.enableBevel.value;
+    const depth: number = this.extrudeConfig.controls.depth.value;
+    const bevelSegments: number = this.extrudeConfig.controls.bevelSegments.value;
+    const bevelThickness: number = this.extrudeConfig.controls.bevelThickness.value;
+    const bevelSize: number = this.extrudeConfig.controls.bevelSize.value;
+    const bevelOffset: number = this.extrudeConfig.controls.bevelOffset.value;
+    const enableBevel: boolean = this.extrudeConfig.controls.enableBevel.value;
 
 
     this.extrusionModeService.onShapeCreate(depth, bevelSegments, bevelThickness, bevelSize, bevelOffset, enableBevel);
@@ -272,5 +312,15 @@ export class ConfigBarComponent implements OnInit {
 
   onModelLoad() {
     this.threejsService.onLoadObj();
+  }
+
+  onFontLoad(event) {
+    const reader: FileReader = new FileReader();
+    reader.onload = (ev: any) => {
+        this.threejsService.font = ev.target.result;
+        };
+    if (event.target.files.length !== 0) {
+          reader.readAsDataURL(event.target.files[0]);
+        }
   }
 }
